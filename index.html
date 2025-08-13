@@ -3,62 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMWBD Landing Page</title>
+    <title>Welcome to PMWBD</title>
+    <meta name="description" content="PMWBD - Premium Movie Download & Streaming Landing Page">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1d2b64, #f8cdda);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #fff;
-            text-align: center;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        html, body { height: 100%; overflow: hidden; }
+
+        /* Background video */
+        #bg-video {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -2;
         }
 
+        /* Gradient overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(29,43,100,0.6), rgba(248,205,218,0.6));
+            z-index: -1;
+        }
+
+        /* Particle container */
+        #particles {
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            z-index:-1;
+        }
+
+        /* Main container */
         .container {
-            max-width: 500px;
-            background: rgba(0,0,0,0.6);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            color: #fff;
+            padding: 0 20px;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 20px;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.7);
+            animation: fadeInDown 2s ease forwards;
         }
 
         p {
             font-size: 1.2rem;
             margin-bottom: 30px;
+            text-shadow: 1px 1px 10px rgba(0,0,0,0.6);
+            animation: fadeInUp 2s ease forwards;
         }
 
         .btn {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 18px 50px;
+            font-size: 1.3rem;
             color: #fff;
-            background-color: #ff4b2b;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.4s ease;
+            animation: fadeInUp 2.5s ease forwards;
         }
 
         .btn:hover {
-            background-color: #ff416c;
-            transform: scale(1.05);
+            transform: scale(1.1) rotate(-2deg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+        }
+
+        /* Footer */
+        footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown { from {opacity:0; transform: translateY(-50px);} to {opacity:1; transform: translateY(0);} }
+        @keyframes fadeInUp { from {opacity:0; transform: translateY(50px);} to {opacity:1; transform: translateY(0);} }
+
+        /* Responsive */
+        @media(max-width:600px) {
+            h1 { font-size: 2rem; }
+            .btn { padding: 14px 35px; font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Background video (replace src with your own short video link or free stock video) -->
+    <video autoplay muted loop id="bg-video">
+        <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+
+    <!-- Particle canvas -->
+    <canvas id="particles"></canvas>
+
+    <!-- Main content -->
     <div class="container">
         <h1>Welcome to PMWBD</h1>
-        <p>Click the button below to visit our main website.</p>
-        <a href="https://pmwbd.rf.gd" class="btn">Go to PMWBD</a>
+        <p>Click below to enter our main website</p>
+        <a href="https://pmwbd.rf.gd" class="btn">Visit PMWBD</a>
     </div>
+
+    <footer>
+        &copy; 2025 PMWBD | Powered by <a href="#" style="color:#fff; text-decoration:underline;">Your Brand</a>
+    </footer>
+
+    <!-- Particle JS -->
+    <script>
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particlesArray = [];
+        const colors = ['#ffffff', '#ff4b2b', '#ff416c'];
+
+        class Particle {
+            constructor(){
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random()*3 + 1;
+                this.speedX = Math.random()*1 - 0.5;
+                this.speedY = Math.random()*1 - 0.5;
+                this.color = colors[Math.floor(Math.random()*colors.length)];
+            }
+            update(){
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if(this.x <0 || this.x>canvas.width) this.speedX*=-1;
+                if(this.y <0 || this.y>canvas.height) this.speedY*=-1;
+            }
+            draw(){
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles(){
+            for(let i=0;i<150;i++){
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particlesArray.forEach(p => {p.update(); p.draw();});
+            requestAnimationFrame(animate);
+        }
+
+        initParticles();
+        animate();
+
+        window.addEventListener('resize', ()=>{
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
 </body>
 </html>
